@@ -3,4 +3,62 @@ title: "P8105 - Data Wrangling I"
 output: github_document
 ---
 
+```{r}
+library(tidyverse)
+```
+
+### Notes
+put data and code in same project because otherwise it might get tricky due to different paths 
+
+relative paths - starting from where you are (project/directory)
+absolute - full address on your computer
+
+# Class practice
+Import `FAS_litters.csv` and clean up variable names (convert to lowercase and add underscores). We want to use `janitor` package but not load it so we use `package :: function` syntax just for that.
+
+```{r}
+litters_df =
+  read_csv(file="data_import_examples/FAS_litters.csv")
+
+litters_df = 
+  janitor ::clean_names(litters_df)
+```
+
+Now using absolute path...
+```{r}
+litters_df_abs =
+  read_csv(file="C:/Users/wangl/OneDrive - cumc.columbia.edu/Data Science/Class/datawrangling_i/data_import_examples/FAS_litters.csv")
+
+litters_df_abs = 
+  janitor ::clean_names(litters_df_abs)
+```
+
+Now importing pups_data
+```{r}
+pups_df = read_csv(file="data_import_examples/FAS_pups.csv")
+
+pups_df = janitor :: clean_names(pups_df)
+```
+
+## Look at data
+print your df using its name, or use `head()`- prints first 6 rows, `tail()`- the last 6
+```{r}
+litters_df
+
+head(litters_df)
+
+tail(litters_df)
+```
+or  `view()`- see it in another window (don't include in Rmd file)
+```{r, eval=FALSE}
+view(litters_df)
+```
+
+data summary code
+```{r}
+str(litters_df)
+
+skimr::skim(litters_df)
+```
+
 
