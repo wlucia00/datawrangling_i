@@ -8,10 +8,13 @@ library(tidyverse)
 ```
 
 ### Notes
-put data and code in same project because otherwise it might get tricky due to different paths 
 
-relative paths - starting from where you are (project/directory)
+* put data and code in same project because otherwise it might get tricky due to different paths 
+
+* relative paths - starting from where you are (project/directory)
 absolute - full address on your computer
+
+* by default, `read_csv` thinks the first row is column names 
 
 # Class practice
 Import `FAS_litters.csv` and clean up variable names (convert to lowercase and add underscores). We want to use `janitor` package but not load it so we use `package :: function` syntax just for that.
@@ -61,4 +64,26 @@ str(litters_df)
 skimr::skim(litters_df)
 ```
 
+## Options in `read_*`
+you can skip rows in `read_csv` but might run into some issues
+```{r}
+litters_df = 
+  read_csv("data_import_examples/FAS_litters.csv", skip=10)
+```
+
+missing data is "NA" in the file, but it can be changed to a string or you can choose what values to code as NA
+```{r}
+litters_df = 
+  read_csv("data_import_examples/FAS_litters.csv", na=c('NA',19,"."))
+```
+
+`readr` does column parsing to figure out variable types by looking at first 1000 rows. you can be explicit in what type it is or tell R to read more rows. (here, we made the Group variable a factor variable)
+```{r}
+litters_df = 
+  read_csv("data_import_examples/FAS_litters.csv", 
+           col_types = 
+             cols(
+               Group= col_factor()
+             ))
+```
 
