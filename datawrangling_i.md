@@ -18,11 +18,13 @@ library(tidyverse)
 
 ### Notes
 
-put data and code in same project because otherwise it might get tricky
-due to different paths
+- put data and code in same project because otherwise it might get
+  tricky due to different paths
 
-relative paths - starting from where you are (project/directory)
-absolute - full address on your computer
+- relative paths - starting from where you are (project/directory)
+  absolute - full address on your computer
+
+- by default, `read_csv` thinks the first row is column names
 
 # Class practice
 
@@ -213,3 +215,56 @@ Data summary
 | pups_born_alive |         0 |          1.00 |  7.35 | 1.76 |  3.0 |  6.00 |  8.00 |  8.00 | 11.0 | ▁▃▂▇▁ |
 | pups_dead_birth |         0 |          1.00 |  0.33 | 0.75 |  0.0 |  0.00 |  0.00 |  0.00 |  4.0 | ▇▂▁▁▁ |
 | pups_survive    |         0 |          1.00 |  6.41 | 2.05 |  1.0 |  5.00 |  7.00 |  8.00 |  9.0 | ▁▃▂▇▇ |
+
+## Options in `read_*`
+
+you can skip rows in `read_csv` but might run into some issues
+
+``` r
+litters_df = 
+  read_csv("data_import_examples/FAS_litters.csv", skip=10)
+```
+
+    ## New names:
+    ## Rows: 39 Columns: 8
+    ## ── Column specification
+    ## ──────────────────────────────────────────────────────── Delimiter: "," chr
+    ## (2): Con8, #3/5/2/2/95 dbl (6): 28.5, NA, 20, 8...6, 0, 8...8
+    ## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+    ## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+    ## • `8` -> `8...6`
+    ## • `8` -> `8...8`
+
+missing data is “NA” in the file, but it can be changed to a string or
+you can choose what values to code as NA
+
+``` r
+litters_df = 
+  read_csv("data_import_examples/FAS_litters.csv", na=c('NA',19,"."))
+```
+
+    ## Rows: 49 Columns: 8
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (2): Group, Litter Number
+    ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+`readr` does column parsing to figure out variable types by looking at
+first 1000 rows. you can be explicit in what type it is or tell R to
+read more rows. (here, we made the Group variable a factor variable)
+
+``` r
+litters_df = 
+  read_csv("data_import_examples/FAS_litters.csv", 
+           col_types = 
+             cols(
+               Group= col_factor()
+             ))
+```
+
+## Other file types
+
+import xlsx

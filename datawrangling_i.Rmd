@@ -87,3 +87,9 @@ litters_df =
              ))
 ```
 
+## Other file types
+import xlsx
+```{r}
+
+```
+
