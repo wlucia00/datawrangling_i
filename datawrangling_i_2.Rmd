@@ -1,0 +1,20 @@
+---
+title: "Data Wrangling II"
+author: "Lucia Wang lw3061"
+date: "2023-09-21"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+```
+
+Import FAS litters and pups
+```{r}
+litters_df =
+  read_csv(file="data_import_examples/FAS_litters.csv")
+
+litters_df = 
+  janitor ::clean_names(litters_df)
+```
+
