@@ -91,4 +91,10 @@ mutate(
 )
 ```
 
+## `arrange` 
+if data not organized well (like proc sort)
+```{r}
+arrange(litters_df, gd0_weight)
+```
+
 
