@@ -8,6 +8,32 @@ output: github_document
 ```{r}
 library(tidyverse)
 
-options(tibble.print_min=5)
+options(tibble.print_min=10)
 ```
+
+## PULSE data
+`Pivot_longer()` goes from wide to long
+```{r}
+pulse_df = 
+  haven::read_sas("./data_import_examples/public_pulse_data.sas7bdat") |>
+  janitor::clean_names() |>
+  pivot_longer(
+    bdi_score_bl:bdi_score_12m,
+    names_to = "visit",
+    values_to = "bdi_score",
+    names_prefix = "bdi_score_"
+  ) |>
+  mutate(
+    visit = replace(visit, visit == "bl", "00m")
+  )
+
+pulse_df
+```
+first you choose the variables to be pivoted with `:`, then name the new variable with `names_to`, then what values you want to use with `values_to`. finally, `names_prefix` gets rid of the prefix.
+
+`replace()` takes in vector, logical statement, and replacement value
+
+
+
+  
 
