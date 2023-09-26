@@ -1,0 +1,13 @@
+---
+title: "Datawrangling_i_3"
+author: "Lucia Wang"
+date: "2023-09-26"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+
+options(tibble.print_min=5)
+```
+
