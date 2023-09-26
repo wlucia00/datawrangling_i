@@ -144,3 +144,111 @@ lotr_df =
   ) |>
   relocate(movie)
 ```
+
+## Revisit FAS
+
+``` r
+litters_df = 
+  read_csv("data_import_examples/FAS_litters.csv") |>
+  janitor::clean_names() |>
+  mutate(wt_gain = gd18_weight - gd0_weight) |>
+  select(litter_number, group, wt_gain) |>
+  separate(group, into = c("dose", "day_of_tx"), 3)
+```
+
+    ## Rows: 49 Columns: 8
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (2): Group, Litter Number
+    ## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+litters_df
+```
+
+    ## # A tibble: 49 × 4
+    ##    litter_number   dose  day_of_tx wt_gain
+    ##    <chr>           <chr> <chr>       <dbl>
+    ##  1 #85             Con   7            15  
+    ##  2 #1/2/95/2       Con   7            15  
+    ##  3 #5/5/3/83/3-3   Con   7            15.4
+    ##  4 #5/4/2/95/2     Con   7            15.6
+    ##  5 #4/2/95/3-3     Con   7            NA  
+    ##  6 #2/2/95/3-2     Con   7            NA  
+    ##  7 #1/5/3/83/3-3/2 Con   7            NA  
+    ##  8 #3/83/3-3       Con   8            NA  
+    ##  9 #2/95/3         Con   8            NA  
+    ## 10 #3/5/2/2/95     Con   8            NA  
+    ## # ℹ 39 more rows
+
+``` r
+pups_df =
+  read_csv("data_import_examples/FAS_pups.csv") |>
+  janitor::clean_names() |> 
+  mutate(
+    sex = case_match(
+      sex,
+      1 ~ "male",
+      2 ~ "female"
+    )
+  )
+```
+
+    ## Rows: 313 Columns: 6
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (1): Litter Number
+    ## dbl (5): Sex, PD ears, PD eyes, PD pivot, PD walk
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+pups_df
+```
+
+    ## # A tibble: 313 × 6
+    ##    litter_number sex   pd_ears pd_eyes pd_pivot pd_walk
+    ##    <chr>         <chr>   <dbl>   <dbl>    <dbl>   <dbl>
+    ##  1 #85           male        4      13        7      11
+    ##  2 #85           male        4      13        7      12
+    ##  3 #1/2/95/2     male        5      13        7       9
+    ##  4 #1/2/95/2     male        5      13        8      10
+    ##  5 #5/5/3/83/3-3 male        5      13        8      10
+    ##  6 #5/5/3/83/3-3 male        5      14        6       9
+    ##  7 #5/4/2/95/2   male       NA      14        5       9
+    ##  8 #4/2/95/3-3   male        4      13        6       8
+    ##  9 #4/2/95/3-3   male        4      13        7       9
+    ## 10 #2/2/95/3-2   male        4      NA        8      10
+    ## # ℹ 303 more rows
+
+``` r
+fas_df = 
+  left_join(pups_df, litters_df, by = "litter_number")
+
+fas_df
+```
+
+    ## # A tibble: 313 × 9
+    ##    litter_number sex   pd_ears pd_eyes pd_pivot pd_walk dose  day_of_tx wt_gain
+    ##    <chr>         <chr>   <dbl>   <dbl>    <dbl>   <dbl> <chr> <chr>       <dbl>
+    ##  1 #85           male        4      13        7      11 Con   7            15  
+    ##  2 #85           male        4      13        7      12 Con   7            15  
+    ##  3 #1/2/95/2     male        5      13        7       9 Con   7            15  
+    ##  4 #1/2/95/2     male        5      13        8      10 Con   7            15  
+    ##  5 #5/5/3/83/3-3 male        5      13        8      10 Con   7            15.4
+    ##  6 #5/5/3/83/3-3 male        5      14        6       9 Con   7            15.4
+    ##  7 #5/4/2/95/2   male       NA      14        5       9 Con   7            15.6
+    ##  8 #4/2/95/3-3   male        4      13        6       8 Con   7            NA  
+    ##  9 #4/2/95/3-3   male        4      13        7       9 Con   7            NA  
+    ## 10 #2/2/95/3-2   male        4      NA        8      10 Con   7            NA  
+    ## # ℹ 303 more rows
+
+`separate` can split a variable into two - be careful where you want to
+split it.
+
+`left_join` used here to bring litters into pups data. use the key `by`
+or it will look for columns with same name by default
