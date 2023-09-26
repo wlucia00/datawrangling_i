@@ -85,3 +85,40 @@ lotr_df =
 
 ```
 
+## Revisit FAS
+
+```{r}
+litters_df = 
+  read_csv("data_import_examples/FAS_litters.csv") |>
+  janitor::clean_names() |>
+  mutate(wt_gain = gd18_weight - gd0_weight) |>
+  select(litter_number, group, wt_gain) |>
+  separate(group, into = c("dose", "day_of_tx"), 3)
+
+litters_df
+
+pups_df =
+  read_csv("data_import_examples/FAS_pups.csv") |>
+  janitor::clean_names() |> 
+  mutate(
+    sex = case_match(
+      sex,
+      1 ~ "male",
+      2 ~ "female"
+    )
+  )
+
+pups_df
+
+fas_df = 
+  left_join(pups_df, litters_df, by = "litter_number")
+
+fas_df
+```
+`separate` can split a variable into two - be careful where you want to split it.
+
+`left_join` used here to bring litters into pups data. use the key `by` or it will look for columns with same name by default
+
+
+
+
