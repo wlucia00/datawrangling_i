@@ -33,7 +33,28 @@ first you choose the variables to be pivoted with `:`, then name the new variabl
 
 `replace()` takes in vector, logical statement, and replacement value
 
+### learning assessment
+```{r}
+litters_df =
+  read_csv("./data_import_examples/FAS_litters.csv") |>
+  janitor::clean_names() |>
+  select(litter_number, gd0_weight, gd18_weight) |>
+  pivot_longer(
+    gd0_weight:gd18_weight, 
+    names_to = "gd",
+    values_to = "weight"
+  ) |>
+  mutate(
+    gd = case_match(
+      gd, 
+      "gd0_weight"  ~ 0,
+      "gd18_weight" ~ 18
+    )
+  )
+  
+litters_df
+```
 
-
+`case_match` helps you replace a bunch of stuff using the `~` 
   
 
